@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ソフトテニス試合アーカイブ</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F6F2;--panel:#FFF;--ink:#17231D;--sub:#5B6B62;--line:#D6DFD8;--court:#1F5A43;--court-2:#2B7A5B;--ball:#F2B705;--lose:#C2452D;--num:"Barlow Condensed","Arial Narrow",sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1713;--panel:#18221D;--ink:#E7EEE9;--sub:#9AADA2;--line:#2B3A32;--court:#2E7A5C;--court-2:#3C9471;--ball:#F5C431;--lose:#E0674F}}
+:root[data-theme="dark"]{--bg:#0F1713;--panel:#18221D;--ink:#E7EEE9;--sub:#9AADA2;--line:#2B3A32;--court:#2E7A5C;--court-2:#3C9471;--ball:#F5C431;--lose:#E0674F}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;font-size:15px;line-height:1.6}
+header{background:var(--court);color:#fff;padding:14px 16px 0}
+header h1{margin:0 0 8px;font-size:19px;font-weight:900}
+nav{display:flex;border-top:2px solid rgba(255,255,255,.45)}
+nav button{flex:1;background:none;border:0;color:rgba(255,255,255,.75);font:inherit;font-weight:700;padding:12px 6px;border-bottom:4px solid transparent;cursor:pointer}
+nav button[aria-selected="true"]{color:#fff;border-bottom-color:var(--ball)}
+main{max-width:860px;margin:0 auto;padding:16px}
+h2{font-size:17px;margin:4px 0 10px}
+h3{font-size:15px;margin:14px 0 6px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sp{justify-content:space-between}
+.b{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:9px 13px;cursor:pointer;min-height:42px;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.b.primary{background:var(--court);border-color:var(--court);color:#fff}
+.b.small{min-height:34px;padding:5px 10px;font-size:13px}
+.b:disabled{opacity:.45;cursor:default}
+:focus-visible{outline:3px solid var(--ball);outline-offset:2px}
+input[type=file]{position:absolute;width:1px;height:1px;opacity:0}
+input[type=text],input[type=date],input[type=search],select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%}
+label.f{display:block;font-size:13px;color:var(--sub)}
+label.f>*{margin-top:3px;color:var(--ink);font-size:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid4{display:grid;grid-template-columns:2fr 1fr;gap:6px;align-items:end}
+@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.muted{color:var(--sub);font-size:13px}
+.empty{border:2px dashed var(--line);border-radius:12px;padding:24px 16px;text-align:center;color:var(--sub)}
+.card{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+.card b{font-size:16px}
+.tag{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:1px 7px;margin-left:6px}
+.tag.w{background:var(--court-2);color:#fff}.tag.l{background:var(--lose);color:#fff}.tag.p{background:var(--line);color:var(--ink)}
+.stage{background:#000;border-radius:12px;overflow:hidden;position:relative}
+.stage video,.stage iframe{display:block;width:100%;aspect-ratio:16/9;border:0;max-height:60vh}
+.board{background:var(--court);color:#fff;border-radius:12px;padding:10px 14px;position:relative}
+.board::before{content:"";position:absolute;inset:6px;border:2px solid rgba(255,255,255,.35);border-radius:7px;pointer-events:none}
+.board .ln{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;position:relative}
+.board .ln+.ln{margin-top:4px}
+.board .nm{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.board .g,.board .p{font-family:var(--num);font-size:34px;line-height:1;text-align:center;min-width:30px}
+.board .p{background:rgba(0,0,0,.22);border-radius:7px;min-width:46px;padding:2px 4px}
+.board .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ball);margin-left:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.chips button{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer;min-height:38px}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips.players button{border-radius:10px;text-align:left;line-height:1.25}
+.chips.players button small{display:block;font-size:11px;opacity:.75}
+.chips.players button.opp{border-style:dashed}
+.res{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.res button{font:inherit;font-weight:900;border:0;border-radius:10px;padding:14px 4px;cursor:pointer;color:#fff;background:var(--lose)}
+.res button.win{background:var(--court-2)}
+.plog{border-top:1px solid var(--line)}
+.pt{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:8px 2px;border-bottom:1px solid var(--line);font-size:14px}
+.pt .t{font-family:var(--num);font-size:17px;min-width:50px}
+.pt .mk{font-weight:900;width:22px;text-align:center}
+.pt .mk.w{color:var(--court-2)}.pt .mk.l{color:var(--lose)}
+.pt button{font:inherit}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+td.n{font-family:var(--num);font-size:17px;text-align:right;white-space:nowrap}
+.scroll{overflow-x:auto}
+.ai-out{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:12px;margin-top:10px;border-left:4px solid var(--ball)}
+.ai-out:empty{display:none}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+details summary{cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <h1>ソフトテニス試合アーカイブ</h1>
+  <nav role="tablist">
+    <button role="tab" data-v="matches" aria-selected="true">試合</button>
+    <button role="tab" data-v="players" aria-selected="false">選手</button>
+    <button role="tab" data-v="scout" aria-selected="false">分析・AI検索</button>
+  </nav>
+</header>
+<main id="app"></main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1800)};
+const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const mmss=t=>{t=Math.max(0,Math.round(t||0));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+const parseT=s=>{if(!s)return null;const p=String(s).split(':').map(Number);if(p.some(isNaN))return null;return p.reduce((a,b)=>a*60+b,0)};
+const ytId=u=>{if(!u)return null;const m=String(u).match(/(?:youtu\.be\/|v=|shorts\/|live\/|embed\/)([\w-]{11})/);return m?m[1]:null};
+
+const SHOTS=['サーブ','レシーブ','フォア','バック','ボレー','スマッシュ','ロブ','その他'];
+const BALLS=['シュートボール','ロブ','中ロブ','カット','ツイスト','ボレー','スマッシュ'];
+const RES=[{v:'win',l:'決まった'},{v:'ネット',l:'ネット'},{v:'アウト',l:'アウト'},{v:'その他ミス',l:'他のミス'}];
+
+/* ---------- storage ---------- */
+let db=null,S={players:[],matches:[],settings:{ourSchool:''}};
+const LK='st-archive';
+try{const j=JSON.parse(localStorage.getItem(LK)||'null');if(j)S=Object.assign(S,j)}catch(e){}
+const saveLocal=()=>{try{localStorage.setItem(LK,JSON.stringify(S))}catch(e){}};
+async function put(col,o){const arr=S[col];const i=arr.findIndex(x=>x.id===o.id);i>=0?arr[i]=o:arr.push(o);saveLocal();
+  if(db){try{await db.doc(col+'/'+o.id).set(o)}catch(e){toast('クラウド保存に失敗（端末には保存済み）')}}}
+async function del(col,id){S[col]=S[col].filter(x=>x.id!==id);saveLocal();if(db){try{await db.doc(col+'/'+id).delete()}catch(e){}}}
+async function putSettings(){saveLocal();if(db){try{await db.doc('settings/main').set(S.settings)}catch(e){}}}
+(async()=>{try{db=await window.claude?.use('db')}catch(e){}
+  if(!db){render();return}
+  try{for(const col of ['players','matches']){const snap=await db.collection(col).get();const remote=snap.docs.filter(d=>d.exists).map(d=>({...d.data(),id:d.id}));
+      const ids=new Set(remote.map(r=>r.id));for(const l of S[col])if(!ids.has(l.id)){remote.push(l);db.doc(col+'/'+l.id).set(l).catch(()=>{})}S[col]=remote}
+    const st=await db.doc('settings/main').get();if(st.exists)S.settings=st.data();
+  }catch(e){}
+  saveLocal();render()})();
+let sampleP=(async()=>{try{return await window.claude?.use('sample')||null}catch(e){return null}})();
+let dlP=(async()=>{try{return await window.claude?.use('downloads')||null}catch(e){return null}})();
+
+const P=id=>S.players.find(p=>p.id===id);
+const pname=id=>P(id)?.name||'?';
+const schools=()=>[...new Set(S.players.map(p=>p.school).filter(Boolean))];
+
+/* ---------- scoring ---------- */
+function replay(m){const need=m.gamesToWin||4;let g=[0,0],p=[0,0],fin=false,done=null;const after=[];
+  for(const pt of m.points){if(done){after.push(null);continue}const i=pt.w==='me'?0:1;p[i]++;const tgt=fin?7:4;
+    if(p[i]>=tgt&&p[i]-p[1-i]>=2){g[i]++;p=[0,0];if(g[i]===need)done=i?'opp':'me';else if(g[0]===need-1&&g[1]===need-1)fin=true}
+    after.push(g.join('-'))}
+  return{g,p,fin,done}}
+const sideOf=(m,pid)=>m.our.includes(pid)?'me':'opp';
+
+/* ---------- views ---------- */
+let view='matches',cur=null,sel={serve:'me',first:null,pl:null,shot:null,ball:null},filt={side:'all',kind:'all',q:''},localVid=null;
+$$('nav button').forEach(b=>b.onclick=()=>{view=b.dataset.v;cur=null;render()});
+function render(){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===view));
+  const a=$('#app');
+  if(view==='matches')cur?matchView(a):(cur===false?newMatch(a):matchList(a));
+  if(view==='players')playersView(a);
+  if(view==='scout')scoutView(a);
+  scrollTo(0,0)}
+
+function matchList(a){const ms=[...S.matches].sort((x,y)=>(y.date||'').localeCompare(x.date||''));
+  a.innerHTML=`<div class="row sp" style="margin-bottom:12px"><h2 style="margin:0">試合一覧</h2><button class="b primary" id="nm">試合を追加</button></div>
+  ${ms.length?ms.map(m=>{const r=replay(m);return`<button class="card" data-id="${m.id}"><div class="row sp"><b>${esc(m.event||'試合')}</b><span class="muted">${esc(m.date||'')}</span></div>
+   <div>${m.our.map(pname).map(esc).join('・')}　${r.g.join(' - ')}　${esc(m.oppSchool||'')} ${m.opp.map(pname).map(esc).join('・')}
+   ${r.done?`<span class="tag ${r.done==='me'?'w':'l'}">${r.done==='me'?'勝ち':'負け'}</span>`:'<span class="tag p">記録中</span>'}${ytId(m.youtube)?'<span class="tag p">動画</span>':''}</div>
+   <div class="muted">${m.points.length}ポイント記録</div></button>`}).join(''):'<div class="empty">まだ試合がありません。「試合を追加」から、YouTubeのURLと対戦ペアを登録しましょう。</div>'}
+  <div class="panel" style="margin-top:16px"><div class="row sp"><span class="muted" id="where">${db?'データはクラウドに保存され、別の端末からも見られます。':'データはこの端末のブラウザに保存されています。'}</span><button class="b small" id="bk">バックアップを保存</button></div></div>`;
+  $('#nm').onclick=()=>{cur=false;render()};
+  $$('.card[data-id]').forEach(c=>c.onclick=()=>{cur=c.dataset.id;localVid=null;render()});
+  $('#bk').onclick=async()=>{const dl=await dlP;const data=JSON.stringify({players:S.players,matches:S.matches,settings:S.settings},null,1);
+    if(!dl){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='softtennis-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();return}try{await dl.save({filename:'softtennis-backup-'+new Date().toISOString().slice(0,10)+'.json',data})}catch(e){toast('保存しませんでした')}};
+}
+
+function newMatch(a){const pl=S.players;
+  const opts=pl.map(p=>`<option value="${esc(p.name)}">${esc(p.school||'')} ${esc(p.pos||'')}</option>`).join('');
+  const slot=(k,label,pos)=>`<div class="grid4"><label class="f">${label}<input type="text" list="dl" id="${k}n" autocomplete="off"></label><label class="f">ポジション<select id="${k}p"><option ${pos==='前衛'?'selected':''}>前衛</option><option ${pos==='後衛'?'selected':''}>後衛</option></select></label></div>`;
+  a.innerHTML=`<button class="b small" id="bk">← 一覧</button>
+  <div class="panel" style="margin-top:10px"><h2>試合を追加</h2>
+   <div class="grid2"><label class="f">日付<input type="date" id="d" value="${new Date().toISOString().slice(0,10)}"></label><label class="f">大会・試合名<input type="text" id="ev" placeholder="例：秋季新人戦 2回戦"></label></div>
+   <label class="f" style="margin-top:8px">YouTubeのURL（限定公開でOK）<input type="text" id="yt" placeholder="https://youtu.be/…"></label>
+   <label class="f" style="margin-top:8px">試合形式<select id="gm"><option value="4">7ゲームマッチ</option><option value="3">5ゲームマッチ</option><option value="5">9ゲームマッチ</option></select></label>
+   <h3>こちらのペア</h3><label class="f">学校・チーム<input type="text" id="os" list="dls" value="${esc(S.settings.ourSchool||'')}"></label>
+   ${slot('a','前衛','前衛')}${slot('b','後衛','後衛')}
+   <h3>相手のペア</h3><label class="f">学校・チーム<input type="text" id="xs" list="dls" placeholder="例：西新井中"></label>
+   ${slot('c','前衛','前衛')}${slot('d','後衛','後衛')}
+   <datalist id="dl">${opts}</datalist><datalist id="dls">${schools().map(s=>`<option value="${esc(s)}">`).join('')}</datalist>
+   <p class="muted">名前は候補から選べます。新しい名前は選手として自動で登録されます。</p>
+   <button class="b primary" id="go">登録して記録を始める</button></div>`;
+  $('#bk').onclick=()=>{cur=null;render()};
+  // auto-fill position when choosing known player
+  ['a','b','c','d'].forEach(k=>$('#'+k+'n').onchange=()=>{const p=S.players.find(x=>x.name===$('#'+k+'n').value.trim());if(p?.pos)$('#'+k+'p').value=p.pos});
+  $('#go').onclick=async()=>{
+    const os=$('#os').value.trim(),xs=$('#xs').value.trim();
+    const get=async(k,school,ours)=>{const n=$('#'+k+'n').value.trim();if(!n)return null;const pos=$('#'+k+'p').value;
+      let p=S.players.find(x=>x.name===n&&(x.school||'')===school);if(!p){p={id:uid(),name:n,school,pos,ours};await put('players',p)}else if(p.pos!==pos){p={...p,pos};await put('players',p)}return p.id};
+    const our=[await get('a',os,true),await get('b',os,true)].filter(Boolean),opp=[await get('c',xs,false),await get('d',xs,false)].filter(Boolean);
+    if(our.length<1||opp.length<1){toast('両方のペアの名前を入れてください');return}
+    if(os&&os!==S.settings.ourSchool){S.settings.ourSchool=os;putSettings()}
+    const m={id:uid(),date:$('#d').value,event:$('#ev').value.trim(),youtube:$('#yt').value.trim(),gamesToWin:+$('#gm').value,our,opp,oppSchool:xs,ourSchool:os,points:[]};
+    await put('matches',m);cur=m.id;render()};
+}
+
+function matchView(a){const m=S.matches.find(x=>x.id===cur);if(!m){cur=null;return render()}
+  const id=ytId(m.youtube);const r=replay(m);
+  const nm=pid=>esc(pname(pid));
+  a.innerHTML=`<div class="row sp"><button class="b small" id="bk">← 一覧</button><span class="row" style="gap:4px"><button class="b small" id="edit">編集</button><button class="b small" id="delm">削除</button></span></div>
+  <h2 style="margin-top:10px">${esc(m.event||'試合')} <span class="muted">${esc(m.date)}</span></h2>
+  <div class="stage" id="stage">${localVid?'<video id="lv" controls playsinline></video>':id?`<iframe id="yt" src="https://www.youtube-nocookie.com/embed/${id}?playsinline=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="試合動画"></iframe>`:'<div class="empty" style="border:0;color:#bbb">YouTubeのURLが未登録です</div>'}</div>
+  <div class="row" style="margin:8px 0 14px">
+    ${id?`<a class="b small" id="ytl" href="https://youtu.be/${id}" target="_blank" rel="noopener">YouTubeで開く</a>`:''}
+    <label class="b small">スマホ内の動画で記録する<input type="file" id="lf" accept="video/*"></label>
+    ${localVid?'<button class="b small" id="ytb">YouTube表示に戻す</button>':''}
+  </div>
+  <div class="board"><div class="ln"><div class="nm">${m.our.map(nm).join('・')}${sel.serve==='me'?'<span class="dot"></span>':''}</div><div class="g">${r.g[0]}</div><div class="p">${r.p[0]}</div></div>
+   <div class="ln"><div class="nm">${esc(m.oppSchool)} ${m.opp.map(nm).join('・')}${sel.serve==='opp'?'<span class="dot"></span>':''}</div><div class="g">${r.g[1]}</div><div class="p">${r.p[1]}</div></div></div>
+  <details class="panel" style="margin-top:12px" ${r.done?'':'open'}><summary><b>ポイントを記録</b></summary>
+   <div style="margin-top:10px">
+   <div class="grid2"><label class="f">動画の時刻 <span id="tsrc"></span><input type="text" id="tt" placeholder="例 3:25" inputmode="numeric"></label>
+     <div><div class="muted">サーブ側</div><div class="chips" id="cs"><button data-v="me">こちら</button><button data-v="opp">相手</button></div></div></div>
+   <div class="muted">サーブ</div><div class="chips" id="cf"><button data-v="1st">1st入</button><button data-v="2nd">2nd入</button><button data-v="df">ダブルフォルト</button></div>
+   <div class="muted">最後に打った人</div><div class="chips players" id="cp">${[...m.our,...m.opp].map(pid=>`<button data-v="${pid}" class="${m.our.includes(pid)?'':'opp'}">${nm(pid)}<small>${m.our.includes(pid)?'こちら':'相手'}・${esc(P(pid)?.pos||'')}</small></button>`).join('')}</div>
+   <div class="muted">打ったショット</div><div class="chips" id="ch">${SHOTS.map(s=>`<button data-v="${s}">${s}</button>`).join('')}</div>
+   <div class="muted">そのとき来た球（わかれば）</div><div class="chips" id="cb">${BALLS.map(s=>`<button data-v="${s}">${s}</button>`).join('')}</div>
+   <div class="muted">結果</div><div class="res">${RES.map(x=>`<button data-v="${x.v}" class="${x.v==='win'?'win':''}">${x.l}</button>`).join('')}</div>
+   <label class="f" style="margin-top:10px">メモ（任意）<input type="text" id="nt"></label>
+   <div class="row" style="margin-top:10px"><button class="b" id="undo">1つ戻す</button></div>
+   </div></details>
+  <div class="panel"><div class="row sp"><h2 style="margin:0">ポイント一覧</h2><span class="muted">タップでその場面へ</span></div>
+   <div class="chips" id="fs"><button data-v="all">すべて</button><button data-v="me">こちらの得点</button><button data-v="opp">相手の得点</button></div>
+   <div class="chips" id="fk"><button data-v="all">全員</button>${[...m.our,...m.opp].map(pid=>`<button data-v="${pid}">${nm(pid)}</button>`).join('')}</div>
+   <div class="plog" id="pl"></div></div>
+  <div class="panel"><h2>この試合の集計</h2><div id="st"></div>
+   <button class="b primary" id="ai" style="margin-top:10px">AIで試合を振り返る</button><div class="ai-out" id="aio"></div></div>`;
+  $('#bk').onclick=()=>{cur=null;render()};
+  $('#edit').onclick=()=>editMatch(m);
+  $('#delm').onclick=async()=>{if(confirm('この試合と記録をすべて削除しますか？')){await del('matches',m.id);cur=null;render()}};
+  const lf=$('#lf');lf.onchange=e=>{const f=e.target.files[0];if(!f)return;localVid=URL.createObjectURL(f);render()};
+  if(localVid){$('#lv').src=localVid;$('#tsrc').textContent='（再生位置から自動）'}
+  $('#ytb')&&($('#ytb').onclick=()=>{localVid=null;render()});
+  const chip=(gid,key,sticky)=>{$$('#'+gid+' button').forEach(b=>{b.setAttribute('aria-pressed',sel[key]===b.dataset.v);b.onclick=()=>{sel[key]=(!sticky&&sel[key]===b.dataset.v)?null:b.dataset.v;$$('#'+gid+' button').forEach(x=>x.setAttribute('aria-pressed',sel[key]===x.dataset.v));if(key==='serve')render()}})};
+  chip('cs','serve',true);chip('cf','first');chip('cp','pl');chip('ch','shot');chip('cb','ball');
+  $$('.res button').forEach(b=>b.onclick=async()=>{
+    if(r.done){toast('試合は終了しています');return}
+    if(!sel.pl){toast('打った人を選んでください');return}
+    const res=b.dataset.v,side=sideOf(m,sel.pl);const w=res==='win'?side:(side==='me'?'opp':'me');
+    let t=localVid&&$('#lv')?$('#lv').currentTime:parseT($('#tt').value);
+    let shot=sel.shot||(sel.first==='df'?'サーブ':null);
+    m.points.push({t,w,pl:sel.pl,side,shot,ball:sel.ball,res,serve:sel.serve,first:sel.first,note:$('#nt').value.trim()||null});
+    Object.assign(sel,{first:null,pl:null,shot:null,ball:null});
+    await put('matches',m);const r2=replay(m);if(r2.done)toast(r2.done==='me'?'試合終了：勝ち':'試合終了：負け');render()});
+  $('#undo').onclick=async()=>{if(!m.points.length)return;m.points.pop();await put('matches',m);render()};
+  // list
+  const drawList=()=>{
+    $$('#fs button').forEach(b=>b.setAttribute('aria-pressed',filt.side===b.dataset.v));
+    $$('#fk button').forEach(b=>b.setAttribute('aria-pressed',filt.kind===b.dataset.v));
+    const rows=m.points.map((p,i)=>({p,i})).filter(({p})=>(filt.side==='all'||p.w===filt.side)&&(filt.kind==='all'||p.pl===filt.kind));
+    $('#pl').innerHTML=rows.map(({p,i})=>`<div class="pt"><span class="t">${p.t!=null?mmss(p.t):'—'}</span>
+      <span><span class="mk ${p.w==='me'?'w':'l'}">${p.w==='me'?'○':'×'}</span>${esc(pname(p.pl))}　${esc(p.shot||'')}${p.res==='win'?'で決め':'　'+esc(p.res)}${p.ball?`<span class="muted">（${esc(p.ball)}に対して）</span>`:''}${p.first==='df'?' <span class="muted">DF</span>':''}${p.note?`<br><span class="muted">${esc(p.note)}</span>`:''}</span>
+      <span class="row" style="gap:4px">${p.t!=null?`<button class="b small" data-go="${p.t}">再生</button>`:''}<button class="b small" data-rm="${i}" aria-label="削除">×</button></span></div>`).reverse().join('')||'<p class="muted">該当するポイントはありません。</p>';
+    $$('[data-go]').forEach(b=>b.onclick=()=>jump(+b.dataset.go));
+    $$('[data-rm]').forEach(b=>b.onclick=async()=>{if(!confirm('このポイントを削除しますか？'))return;m.points.splice(+b.dataset.rm,1);await put('matches',m);render()});
+  };
+  $$('#fs button').forEach(b=>b.onclick=()=>{filt.side=b.dataset.v;drawList()});
+  $$('#fk button').forEach(b=>b.onclick=()=>{filt.kind=b.dataset.v;drawList()});
+  drawList();
+  function jump(t){const s=Math.max(0,t-3);
+    if(localVid&&$('#lv')){const v=$('#lv');v.currentTime=s;v.play();}
+    else if(id){$('#yt').src=`https://www.youtube-nocookie.com/embed/${id}?start=${Math.floor(s)}&autoplay=1&playsinline=1&rel=0`;$('#ytl').href=`https://youtu.be/${id}?t=${Math.floor(s)}`}
+    $('#stage').scrollIntoView({block:'start'})}
+  $('#st').innerHTML=playerTable([...m.our,...m.opp],[m]);
+  $('#ai').onclick=()=>askAI($('#aio'),$('#ai'),`ソフトテニス（ダブルス）の1試合の記録です。こちらのペアは中学2年生の女子。
+試合：${m.event} ${m.date}　こちら：${m.our.map(pname).join('・')}（${m.ourSchool}）　相手：${m.opp.map(pname).join('・')}（${m.oppSchool}）
+結果：${replay(m).g.join('-')}
+ポイント順の記録：${pointsText(m)}
+集計：${JSON.stringify(aggregate([...m.our,...m.opp],[m]))}
+
+記録から言えることだけを根拠に、日本語でやさしく答えてください。
+【試合の流れ】2〜3行
+【こちらの良かった点】選手ごとに
+【こちらの課題】選手ごとに、数字を添えて
+【相手の特徴】選手ごとの得意・苦手
+【次の練習で意識すること】2〜3点`);
+}
+function editMatch(m){const yt=prompt('YouTubeのURL',m.youtube||'');if(yt===null)return;m.youtube=yt.trim();const ev=prompt('大会・試合名',m.event||'');if(ev!==null)m.event=ev.trim();
+  put('matches',m).then(render)}
+
+function pointsText(m){return m.points.map(p=>`${p.w==='me'?'○':'×'}${pname(p.pl)}/${p.shot||'?'}/${p.res==='win'?'決め':p.res}${p.ball?'/来球'+p.ball:''}${p.first==='df'?'/DF':''}${p.note?'/'+p.note:''}`).join(' ')}
+
+/* ---------- aggregation ---------- */
+function aggregate(pids,matches){const out={};
+  for(const pid of pids){const p=P(pid);if(!p)continue;const o={名前:p.name,学校:p.school,ポジション:p.pos,試合数:0,決め:{},ミス:{},来球別ミス:{},決め合計:0,ミス合計:0};
+    for(const m of matches){if(![...m.our,...m.opp].includes(pid))continue;o.試合数++;
+      for(const pt of m.points){if(pt.pl!==pid)continue;const s=pt.shot||'不明';
+        if(pt.res==='win'){o.決め合計++;o.決め[s]=(o.決め[s]||0)+1}
+        else{o.ミス合計++;const k=s+'の'+pt.res;o.ミス[k]=(o.ミス[k]||0)+1;if(pt.ball){const kb=pt.ball+'→'+s+'ミス';o.来球別ミス[kb]=(o.来球別ミス[kb]||0)+1}}}}
+    out[pid]=o}
+  return out}
+function top(o,n=3){return Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n)}
+function playerTable(pids,matches){const ag=aggregate(pids,matches);const rows=Object.values(ag);if(!rows.length)return'<p class="muted">データがありません。</p>';
+  return `<div class="scroll"><table><tr><th>選手</th><th>よく決める</th><th>よくミスする</th></tr>${rows.map(o=>`<tr><td><b>${esc(o.名前)}</b><br><span class="muted">${esc(o.学校||'')} ${esc(o.ポジション||'')}・${o.試合数}試合</span></td>
+   <td>${top(o.決め).map(([k,v])=>`${esc(k)} <b>${v}</b>`).join('<br>')||'<span class="muted">—</span>'}</td>
+   <td>${top(o.ミス).map(([k,v])=>`${esc(k)} <b>${v}</b>`).join('<br>')||'<span class="muted">—</span>'}${top(o.来球別ミス,2).map(([k,v])=>`<br><span class="muted">${esc(k)} ${v}</span>`).join('')}</td></tr>`).join('')}</table></div>`}
+
+/* ---------- players ---------- */
+function playersView(a){const by={};S.players.forEach(p=>(by[p.school||'学校未設定']??=[]).push(p));
+  a.innerHTML=`<div class="panel"><h2>選手を追加</h2><div class="grid2"><label class="f">名前<input type="text" id="pn"></label><label class="f">学校・チーム<input type="text" id="ps" list="dls"></label></div>
+   <div class="grid2" style="margin-top:8px"><label class="f">ポジション<select id="pp"><option>前衛</option><option>後衛</option></select></label><label class="f">利き手<select id="ph"><option value="">—</option><option>右</option><option>左</option></select></label></div>
+   <datalist id="dls">${schools().map(s=>`<option value="${esc(s)}">`).join('')}</datalist>
+   <button class="b primary" id="pa" style="margin-top:10px">追加</button></div>
+   ${Object.keys(by).length?Object.entries(by).map(([s,ps])=>`<div class="panel"><h2>${esc(s)}</h2>${ps.map(p=>`<div class="row sp" style="border-top:1px solid var(--line);padding:8px 0"><span><b>${esc(p.name)}</b> <span class="muted">${esc(p.pos||'')}${p.hand?'・'+esc(p.hand)+'利き':''}</span></span>
+     <span class="row" style="gap:4px"><button class="b small" data-sc="${p.id}">傾向</button><button class="b small" data-ed="${p.id}">編集</button></span></div>`).join('')}</div>`).join(''):'<div class="empty">試合を追加すると、選手も自動で登録されます。</div>'}`;
+  $('#pa').onclick=async()=>{const n=$('#pn').value.trim();if(!n)return;await put('players',{id:uid(),name:n,school:$('#ps').value.trim(),pos:$('#pp').value,hand:$('#ph').value});toast('追加しました');render()};
+  $$('[data-sc]').forEach(b=>b.onclick=()=>{scoutQ=pname(b.dataset.sc);view='scout';render()});
+  $$('[data-ed]').forEach(b=>b.onclick=async()=>{const p=P(b.dataset.ed);const n=prompt('名前（空欄で削除）',p.name);if(n===null)return;
+    if(!n.trim()){if(S.matches.some(m=>[...m.our,...m.opp].includes(p.id))){toast('試合記録がある選手は削除できません');return}await del('players',p.id);return render()}
+    const pos=prompt('ポジション（前衛/後衛）',p.pos||'');const sc=prompt('学校・チーム',p.school||'');await put('players',{...p,name:n.trim(),pos:(pos||p.pos).trim(),school:(sc??p.school).trim()});render()});
+}
+
+/* ---------- scout / AI search ---------- */
+let scoutQ='';
+function scoutView(a){
+  a.innerHTML=`<div class="panel"><h2>分析・AI検索</h2>
+   <p class="muted" style="margin-top:0">学校名か選手名を入れてください。例：西新井</p>
+   <div class="row" style="flex-wrap:nowrap"><input type="search" id="q" value="${esc(scoutQ)}" placeholder="学校名・選手名"><button class="b primary" id="qs" style="flex:none">検索</button></div>
+   <div class="chips" style="margin-top:8px">${schools().map(s=>`<button data-s="${esc(s)}">${esc(s)}</button>`).join('')}</div></div>
+   <div id="res"></div>`;
+  const go=()=>{scoutQ=$('#q').value.trim();show()};
+  $('#qs').onclick=go;$('#q').onkeydown=e=>{if(e.key==='Enter')go()};
+  $$('[data-s]').forEach(b=>b.onclick=()=>{$('#q').value=b.dataset.s;go()});
+  show();
+  function show(){const q=scoutQ;const R=$('#res');if(!q){R.innerHTML='';return}
+    const ps=S.players.filter(p=>(p.school||'').includes(q)||p.name.includes(q));
+    if(!ps.length){R.innerHTML='<div class="empty">「'+esc(q)+'」に当てはまる選手はまだ登録されていません。</div>';return}
+    const ids=ps.map(p=>p.id);const ms=S.matches.filter(m=>[...m.our,...m.opp].some(x=>ids.includes(x)));
+    R.innerHTML=`<div class="panel"><h2>${esc(q)}の記録　<span class="muted">${ms.length}試合</span></h2>${playerTable(ids,ms)}
+     <button class="b primary" id="ai" style="margin-top:12px" ${ms.length?'':'disabled'}>AIに傾向と攻め方をまとめてもらう</button><div class="ai-out" id="aio"></div></div>`;
+    if(!ms.length)return;
+    const ours=ps.some(p=>p.ours);
+    $('#ai').onclick=()=>askAI($('#aio'),$('#ai'),`ソフトテニス（ダブルス）の記録から、「${q}」に当てはまる選手の傾向をまとめてください。記録したのは中学2年生の女子選手の保護者です。
+対象選手の集計：${JSON.stringify(Object.values(aggregate(ids,ms)))}
+関係する試合のポイント順の記録（○はこちらの得点、×は相手の得点。名前は最後に打った人）：
+${ms.slice(0,15).map(m=>`[${m.date} ${m.event}] こちら:${m.our.map(pname).join('・')} 相手:${m.oppSchool} ${m.opp.map(pname).join('・')} → ${pointsText(m)}`).join('\n')}
+
+記録から言えることだけを根拠にし、数字を添えてください。記録が少ない選手はそう書いてください。
+選手ごとに次の形で答えてください：
+■名前（学校・ポジション）
+得意：
+苦手・ミスしやすい球：
+${ours?'伸ばすための練習：':'攻め方のヒント：'}
+最後に【ペアとしての特徴】を2〜3行。`);
+  }
+}
+async function askAI(out,btn,prompt){const sample=await sampleP;if(!sample){out.textContent='AI機能はclaude.aiで開いたときだけ使えます。';return}
+  btn.disabled=true;out.textContent='AIが考えています…';
+  try{await sample(prompt,{modelTier:'complex',onText:({text})=>out.textContent=text})}
+  catch(e){out.textContent=(e.text?e.text+'\n\n':'')+({not_granted:'AIの利用が許可されませんでした。',rate_limited:'混み合っています。少し待ってからもう一度押してください。'}[e.code]||'AIの分析に失敗しました。もう一度試してください。')}
+  finally{btn.disabled=false}}
+
+render();
+</script>
+</body>
+</html>
