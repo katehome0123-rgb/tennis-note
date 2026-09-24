@@ -282,11 +282,11 @@ function aggregate(pids,matches){const out={};
         else{o.ミス合計++;const k=s+'の'+pt.res;o.ミス[k]=(o.ミス[k]||0)+1;if(pt.ball){const kb=pt.ball+'→'+s+'ミス';o.来球別ミス[kb]=(o.来球別ミス[kb]||0)+1}}}}
     out[pid]=o}
   return out}
-function top(o,n=3){return Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n)}
+function topN(o,n=3){return Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n)}
 function playerTable(pids,matches){const ag=aggregate(pids,matches);const rows=Object.values(ag);if(!rows.length)return'<p class="muted">データがありません。</p>';
   return `<div class="scroll"><table><tr><th>選手</th><th>よく決める</th><th>よくミスする</th></tr>${rows.map(o=>`<tr><td><b>${esc(o.名前)}</b><br><span class="muted">${esc(o.学校||'')} ${esc(o.ポジション||'')}・${o.試合数}試合</span></td>
-   <td>${top(o.決め).map(([k,v])=>`${esc(k)} <b>${v}</b>`).join('<br>')||'<span class="muted">—</span>'}</td>
-   <td>${top(o.ミス).map(([k,v])=>`${esc(k)} <b>${v}</b>`).join('<br>')||'<span class="muted">—</span>'}${top(o.来球別ミス,2).map(([k,v])=>`<br><span class="muted">${esc(k)} ${v}</span>`).join('')}</td></tr>`).join('')}</table></div>`}
+   <td>${topN(o.決め).map(([k,v])=>`${esc(k)} <b>${v}</b>`).join('<br>')||'<span class="muted">—</span>'}</td>
+   <td>${topN(o.ミス).map(([k,v])=>`${esc(k)} <b>${v}</b>`).join('<br>')||'<span class="muted">—</span>'}${topN(o.来球別ミス,2).map(([k,v])=>`<br><span class="muted">${esc(k)} ${v}</span>`).join('')}</td></tr>`).join('')}</table></div>`}
 
 /* ---------- players ---------- */
 function playersView(a){const by={};S.players.forEach(p=>(by[p.school||'学校未設定']??=[]).push(p));
